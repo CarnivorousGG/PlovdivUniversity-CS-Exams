@@ -30,6 +30,7 @@ namespace Exam2017
             Code = code;
         }
 
+    
         public Client()
         {
             

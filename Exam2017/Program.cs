@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Dynamic;
 using System.Linq;
 
 namespace Exam2017
 {
-
     //Да се състави компютърна програма за обслужване на промоции под формата на
     //карти за отстъпки в магазин за парфюмерия.Броят на клиентите, които могат да се
     //възползват от промоцията е ограничен до 500. Всеки клиент има право на една карта за
@@ -24,38 +22,22 @@ namespace Exam2017
     //Например код 2020140517 означава, че картата за отстъпки важи за козметика, без
     //натрупване на промоции, процент на отстъпки: 20%, дата на издаване на картата
     //14 май 2017 г.
-    //2. Да се изведе списък на всички клиенти, подредени по име в азбучен ред, като за
-    //всеки клиент се извежда: име и фамилия, град, категория стоки, натрупване на промоции,
-    //процент на отстъпката, дата на издаване на картата.Полетата да бъдат разделени със
-    //запетая и един интервал. Например:
-    //Петър Иванов, Пазарджик, парфюми, без натрупване, 20, 06.06.17
-    //3. Да се изведе списък на клиентите от Пловдив с карта за отстъпки на козметика.
-    //Изведената информация за клиент да бъде във формата от условие 2. Списъкът да се
-    //подреди в нарастващ ред по процентна отстъпка, а при еднаква стойност клиентите да
-    //бъдат подредени по име в азбучен ред.
-    //4. Да се въведе категория на стока (например 2). Да се намери и изведе
-    //максималният процент на отстъпка за въведената категория.
-
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             int n, i;
-            List<Client> Clients = new List<Client>();
+            var Clients = new List<Client>();
             Console.WriteLine("Please, enter the number of clients: ");
             n = Convert.ToInt32(Console.ReadLine());
             if (n < 1 || n > 500)
-            {
                 throw new ArgumentException();
-            }
 
             for (i = 0; i < n; i++)
             {
                 var inputCheck = Console.ReadLine();
                 if (string.IsNullOrEmpty(inputCheck))
-                {
                     throw new ArgumentException();
-                }
                 var input = inputCheck.Split();
                 var client = new Client();
                 client.SetName(input[0], input[1]);
@@ -64,21 +46,25 @@ namespace Exam2017
                 Clients.Add(client);
             }
 
-
+            //2. Да се изведе списък на всички клиенти, подредени по име в азбучен ред, като за
+            //всеки клиент се извежда: име и фамилия, град, категория стоки, натрупване на промоции,
+            //процент на отстъпката, дата на издаване на картата.Полетата да бъдат разделени със
+            //запетая и един интервал. Например:
+            //Петър Иванов, Пазарджик, парфюми, без натрупване, 20, 06.06.17
             Clients.OrderBy(c => c.Name)
                 .ThenBy(c => c.City);
+
             Console.WriteLine("Sort 1: ");
             foreach (var client in Clients)
             {
                 Console.Write(client.Name + " " + client.City);
                 var stock = client.Code.Substring(0, 1);
                 var discount = client.Code.Substring(1, 1);
-                var percent = client.Code.Substring(2, 1) + client.Code.Substring(3, 1);
+                var percent = client.Code.Substring(2, 2);
                 var day = client.Code.Substring(5, 1);
                 var month = client.Code.Substring(7, 1);
                 var year = client.Code.Substring(8, 2);
 
-                
                 switch (stock)
                 {
                     case "1":
@@ -95,30 +81,60 @@ namespace Exam2017
                         break;
                 }
                 if (discount == "1")
-                {
                     Console.Write(" " + "Discount");
-                }
                 else
-                {
                     Console.Write(" " + "No Discount");
-                }
                 Console.Write(" " + $"{percent}");
 
                 Console.Write(" " + $"{day}" + "." + $"{month}" + "." + $"{year}");
-
-
             }
-           
+
             Console.WriteLine();
             Console.WriteLine("Sort 2: ");
-           var sort2 = Clients.Where(c => c.City == "Plovdiv")
-                .OrderByDescending(c => c.Code.Substring(2, 1) + c.Code.Substring(3, 1))
+
+            //3. Да се изведе списък на клиентите от Пловдив с карта за отстъпки на козметика.
+            //Изведената информация за клиент да бъде във формата от условие 2. Списъкът да се
+            //подреди в нарастващ ред по процентна отстъпка, а при еднаква стойност клиентите да
+            //бъдат подредени по име в азбучен ред.
+            var sort2 = Clients.Where(c => c.City == "Plovdiv")
+                .OrderByDescending(c => c.Code.Substring(2, 2))
                 .ThenBy(c => c.Name)
                 .ToList();
-           
-        }
 
-        
+            foreach (var client in sort2)
+                if (client.Code.Substring(0, 1) == "1")
+                    Console.WriteLine($"{client.Name}" + ", " + $"{client.City}" + " "
+                                      + $"{client.Code.Substring(1, 1)}" + " " + "Cosmetics");
+            //4. Да се въведе категория на стока (например 2). Да се намери и изведе
+            //максималният процент на отстъпка за въведената категория.
+            Console.WriteLine();
+            Console.WriteLine("Please, enter a category and you will see the maxium discount percentage: ");
+            var category = Console.ReadLine();
+            var biggestDiscount = int.MinValue;
+            var cat = string.Empty;
+            foreach (var client in sort2)
+            {
+                switch (category)
+                {
+                    case "1":
+
+                        break;
+                    case "2":
+                        cat = "Perfumes";
+                        break;
+                    case "3":
+                        cat = "Accessories";
+                        break;
+                    case "4":
+                        cat = "Servcies";
+                        break;
+                }
+                var discount = int.Parse(client.Code.Substring(2, 2));
+                if (client.Code.Substring(0, 1).Equals(category))
+                    if (discount > biggestDiscount)
+                        biggestDiscount = discount;
+            }
+            Console.WriteLine($"{biggestDiscount} in category {cat}");
+        }
     }
 }
-
