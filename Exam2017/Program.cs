@@ -117,7 +117,7 @@ namespace Exam2017
                 switch (category)
                 {
                     case "1":
-
+                        cat = "Cosmetics";
                         break;
                     case "2":
                         cat = "Perfumes";
