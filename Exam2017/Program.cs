@@ -132,13 +132,16 @@ namespace Exam2017
                 }
                 var catCompare = int.Parse(client.GetCode().Substring(0, 1));
                 var discount = int.Parse(client.GetCode().Substring(2, 2));
-                if ((catCompare != category))
+                if (catCompare != category)
                 {
                     throw new ArgumentException("The category is not listed.");
                 }
-                if (client.GetCode().Substring(0, 1).Equals(category))
-                    if (discount > biggestDiscount)
+                if (catCompare.Equals(category))
+                {
+                    if (discount >= biggestDiscount)
                         biggestDiscount = discount;
+                }
+         
             }
             Console.WriteLine($"{biggestDiscount} in category {cat}");
         }
